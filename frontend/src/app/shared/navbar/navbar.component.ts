@@ -9,15 +9,4 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 	styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-	/*@Output() navigateTo = new EventEmitter<string>();
-
-	menuOpen = false;
-
-	toggleMenu(){
-		this.menuOpen = !this.menuOpen;
-	}
-
-	navigate(route: string){
-		this.navigateTo.emit(route);
-	}*/
 }
