@@ -1,0 +1,89 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Movimientos</h1>
+  </div>
+
+  <div class="alert" *ngIf="mensaje" [ngClass]="[tipoMensaje]">
+    {{ mensaje }}
+  </div>
+
+  <div class="toolbar">
+    <input
+      type="text"
+      placeholder="Buscar movimiento....."
+      [(ngModel)]="busqueda"
+      (input)="buscar()"
+    />
+    <button class="btn btn-primary" (click)="abrirModal()">+ Nuevo</button>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Fecha</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Valor</th>
+          <th scope="col">Saldo</th>
+          <th scope="col">Cuenta</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movimiento of movimientosFiltrados">
+          <td>{{ movimiento.fecha }}</td>
+          <td>{{ movimiento.tipoMovimiento }}</td>
+          <td [ngClass]="movimiento.valor < 0 ? 'text-danger' : 'text-success'">
+            {{ movimiento.valor | currency }}
+          </td>
+          <td>{{ movimiento.saldo | currency }}</td>
+          <td>{{ movimiento.cuenta?.numeroCuenta }}</td>
+          <td class="acctions">
+            <button class="btn btn-delete" (click)="eliminar(movimiento.id!)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="movimientosFiltrados.length === 0">
+          <td colspan="7" class="empty">No hay movimientos registrados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal-->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Nuevo Movimiento</h2>
+      <button class="btn-close" (click)="cerrarModal()">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Cuenta</label>
+        <select [(ngModel)]="movimientoForm.cuenta!.id">
+          <option [ngValue]="0" disable>Seleccione una cuenta</option>
+          <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">
+            {{ cuenta.numeroCuenta }} - {{ cuenta.clienteNombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Movimiento:</label>
+        <select [(ngModel)]="movimientoForm.tipoMovimiento">
+          <option value="Deposito">Deposito</option>
+          <option value="Retiro">Retiro</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Valor:</label>
+        <input type="number" [(ngModel)]="movimientoForm.valor" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+    </div>
+  </div>
+</div>

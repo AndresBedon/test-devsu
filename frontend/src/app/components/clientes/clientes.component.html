@@ -1,0 +1,106 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Clientes</h1>
+  </div>
+
+  <div class="alert" *ngIf="mensaje" [ngClass]="[tipoMensaje]">
+    {{ mensaje }}
+  </div>
+
+  <div class="toolbar">
+    <input
+      type="text"
+      placeholder="Buscar cliente....."
+      [(ngModel)]="busqueda"
+      (input)="buscar()"
+    />
+    <button class="btn btn-primary" (click)="abrirModal()">+ Nuevo</button>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Identificación</th>
+          <th scope="col">Teléfono</th>
+          <th scope="col">Dirección</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientesFiltrados">
+          <td>{{ cliente.nombre }}</td>
+          <td>{{ cliente.identificacion }}</td>
+          <td>{{ cliente.telefono }}</td>
+          <td>{{ cliente.direccion }}</td>
+          <td>
+            <span class="badge" [ngClass]="cliente.estado ? 'badge-active' : 'badge-inactive'">
+              {{ cliente.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="acctions">
+            <button class="btn btn-edit" (click)="abrirModal(cliente)">Editar</button>
+            <button class="btn btn-delete" (click)="eliminar(cliente.id!)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="clientesFiltrados.length === 0">
+          <td colspan="6" class="empty">No hay clientes registrados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal-->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editando ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+      <button class="btn-close" (click)="cerrarModal()">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input type="text" [(ngModel)]="clienteForm.nombre" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Genero:</label>
+          <select [(ngModel)]="clienteForm.genero">
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Edad:</label>
+          <input type="number" [(ngModel)]="clienteForm.edad" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Identificación:</label>
+        <input type="text" [(ngModel)]="clienteForm.identificacion" />
+      </div>
+      <div class="form-group">
+        <label>Dirección:</label>
+        <input type="text" [(ngModel)]="clienteForm.direccion" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña:</label>
+        <input type="password" [(ngModel)]="clienteForm.contrasena" />
+      </div>
+      <div class="form-group">
+        <label>Estado:</label>
+        <select [(ngModel)]="clienteForm.estado">
+          <option [value]="true">Activo</option>
+          <option [value]="false">Inactivo</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+    </div>
+  </div>
+</div>

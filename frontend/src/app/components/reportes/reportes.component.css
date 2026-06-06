@@ -1,0 +1,90 @@
+.filtros {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filtros .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.filtros-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-pdf {
+  background: #e53935;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-pdf:hover {
+  opacity: 0.85;
+}
+
+.text-success {
+  color: #2e7d32;
+  font-weight: 600;
+}
+.text-danger {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: #999;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 48px;
+  color: #666;
+}
+
+.cuenta-grupo {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cuenta-header {
+  display: flex;
+  gap: 24px;
+  padding: 14px 16px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+}
+
+tfoot tr.totales {
+  background: #f9f9f9;
+  font-size: 13px;
+}
+
+tfoot td {
+  padding: 10px 16px;
+  border-top: 2px solid #ddd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
