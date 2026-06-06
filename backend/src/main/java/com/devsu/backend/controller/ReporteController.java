@@ -40,4 +40,15 @@ public class ReporteController {
         return ResponseEntity.ok(response);
 
     }
+
+    @GetMapping("/json")
+    public ResponseEntity<List<ReporteDTO>> getReporteJson(
+            @RequestParam Long clienteId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaFin) {
+        return ResponseEntity.ok(reporteService.getReporte(clienteId, fechaInicio, fechaFin));
+    }
+
 }

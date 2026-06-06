@@ -24,6 +24,8 @@ export class ReportesComponent {
     mensaje: string = '';
     tipoMensaje: string = '';
     cargando: boolean = false;
+    mostrarModalJson: boolean = false;
+    reporteJson: string = '';
 
     constructor(
         private reporteService: ReporteService,
@@ -133,5 +135,39 @@ export class ReportesComponent {
             this.mensaje = '';
             this.cdr.detectChanges();
         }, 4000);
+    }
+
+    verJson(): void {
+        if(!this.clienteId || !this.fechaInicio || !this.fechaFin) {
+            this.mostrarMensaje('Complete todos los campos', 'error');
+            return;
+        }
+
+        this.reporteService.getReporte(
+            this.clienteId,
+            this.fechaInicio,
+            this.fechaFin
+        ).subscribe({
+            next: (data) => {
+                this.reporteJson = JSON.stringify(data.reporte, null, 2);
+                this.mostrarModalJson = true;
+                this.cdr.detectChanges();
+            },
+            error: () => this.mostrarMensaje('Error al obtener JSON', 'error')
+        });
+
+    }
+
+    cerrarModalJson(): void {
+        this.mostrarModalJson = false;
+        this.reporteJson = '';
+        this.cdr.detectChanges();
+    }
+    copiarJson(): void {
+        navigator.clipboard.writeText(this.reporteJson).then(() => {
+            this.mostrarMensaje('JSON copiado al portapapeles', 'success');
+        }).catch(() => {
+            this.mostrarMensaje('Error al copiar JSON', 'error');
+        });
     }
 }

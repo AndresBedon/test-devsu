@@ -71,11 +71,16 @@ export class MovimientosComponent implements OnInit {
     }
 
     buscar(): void {
-        const termino = this.busqueda.toLowerCase();
+        const termino = this.busqueda.toLowerCase().trim();
+        if(!termino) {
+            this.movimientosFiltrados = [...this.movimientos];
+            this.cdr.detectChanges();
+            return;
+        }
         this.movimientosFiltrados = this.movimientos.filter(m =>
-            m.tipoMovimiento.toLowerCase().includes(termino) ||
-            m.cuenta?.numeroCuenta?.toString().includes(termino) ||
-            m.cuenta?.cliente?.nombre?.toLowerCase().includes(termino)
+              Object.values(m).some(val =>
+                val !== null && val !== undefined && typeof val !== 'object' && val.toString().toLowerCase().includes(termino)
+            )|| m.cuenta?.numeroCuenta?.toLowerCase().includes(termino) || m.cuenta?.cliente?.nombre?.toLowerCase().includes(termino)
         );
         this.cdr.detectChanges();
     }
@@ -116,6 +121,7 @@ export class MovimientosComponent implements OnInit {
                     this.mostrarMensaje('Movimiento registrado correctamente', 'success');
                     this.cargarMovimientos();
                     this.cerrarModal();
+                    this.cdr.detectChanges();
                 },
                 error: (err) => {
                     // Resetear valor a positivo para mostrar en el formulario

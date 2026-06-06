@@ -63,7 +63,15 @@
     <div class="modal-body">
       <div class="form-group">
         <label>Nombre:</label>
-        <input type="text" [(ngModel)]="clienteForm.nombre" />
+        <input type="text" [(ngModel)]="clienteForm.nombre" (input)="generarClienteId()" />
+      </div>
+      <div class="form-group">
+        <label>Cliente ID:</label>
+        <input
+          type="text"
+          [(ngModel)]="clienteForm.clienteId"
+          placeholder="Se genera automáticamente"
+        />
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -81,6 +89,10 @@
       <div class="form-group">
         <label>Identificación:</label>
         <input type="text" [(ngModel)]="clienteForm.identificacion" />
+      </div>
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input type="text" [(ngModel)]="clienteForm.telefono" />
       </div>
       <div class="form-group">
         <label>Dirección:</label>

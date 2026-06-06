@@ -28,6 +28,7 @@
       <button class="btn btn-pdf" (click)="descargarPDF()" *ngIf="reportes.length > 0">
         Descargar PDF
       </button>
+      <button class="btn btn-json" (click)="verJson()" *ngIf="reportes.length > 0">Ver JSON</button>
     </div>
   </div>
 
@@ -92,5 +93,22 @@
 
   <div class="loading" *ngIf="cargando">
     <p>Cargando reporte...</p>
+  </div>
+</div>
+
+<!-- Modal JSON -->
+<div class="modal-overlay" *ngIf="mostrarModalJson" (click)="cerrarModalJson()">
+  <div class="modal modal-json" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Reporte en formato JSON</h2>
+      <button class="btn-close" (click)="cerrarModalJson()">x</button>
+    </div>
+    <div class="modal-body">
+      <pre class="json-content">{{ reporteJson }}</pre>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModalJson()">Cerrar</button>
+      <button class="btn btn-primary" (click)="copiarJson()">Copiar JSON</button>
+    </div>
   </div>
 </div>

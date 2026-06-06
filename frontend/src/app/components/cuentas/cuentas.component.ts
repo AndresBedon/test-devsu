@@ -74,11 +74,17 @@ export class CuentasComponent implements OnInit {
     }
 
     buscar(): void {
-        const termino = this.busqueda.toLowerCase();
+        const termino = this.busqueda.toLowerCase().trim();
+        if(!termino) {
+            this.cuentasFiltradas = [...this.cuentas];
+            this.cdr.detectChanges();
+            return;
+        }
         this.cuentasFiltradas = this.cuentas.filter(c =>
-            c.numeroCuenta.toLowerCase().includes(termino) ||
-            c.tipoCuenta.toLowerCase().includes(termino) ||
-            (c.clienteNombre?.toLowerCase().includes(termino) ?? false)
+              Object.values(c).some(val =>
+                val !== null && val !== undefined && typeof val !=='object' && val.toString().toLowerCase().includes(termino)||
+                c.clienteNombre?.toLowerCase().includes(termino)
+            )
         );
         this.cdr.detectChanges();
     }

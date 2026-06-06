@@ -61,11 +61,16 @@ export class ClientesComponent implements OnInit {
     }
 
     buscar(): void {
-        const termino = this.busqueda.toLowerCase();
+        const termino = this.busqueda.toLowerCase().trim();
+        if(!termino) {
+            this.clientesFiltrados = [...this.clientes];
+            this.cdr.detectChanges();
+            return;
+        }
+
         this.clientesFiltrados = this.clientes.filter(c =>
-            c.nombre.toLowerCase().includes(termino) ||
-            c.identificacion.toLowerCase().includes(termino) ||
-            c.telefono.toLowerCase().includes(termino)
+           Object.values(c).some(val =>
+            val !== null && val !== undefined  && val.toString().toLowerCase().includes(termino))
         );
         this.cdr.detectChanges();
     }
@@ -90,6 +95,7 @@ export class ClientesComponent implements OnInit {
                     this.mostrarMensaje('Cliente actualizado correctamente', 'success');
                     this.cargarClientes();
                     this.cerrarModal();
+                    this.cdr.detectChanges();
                 },
                 error: (err) => {
                     this.mostrarMensaje('Error al actualizar cliente', 'error');
@@ -106,6 +112,12 @@ export class ClientesComponent implements OnInit {
                     this.mostrarMensaje('Error al crear cliente', 'error');
                 }
             });
+        }
+    }
+
+    generarClienteId(){
+        if(!this.editando) {
+            this.clienteForm.clienteId = this.clienteForm.nombre.toLowerCase().trim().replace(/\s+/g, '');
         }
     }
 

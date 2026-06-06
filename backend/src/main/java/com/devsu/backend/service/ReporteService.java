@@ -3,7 +3,10 @@ package com.devsu.backend.service;
 
 
 import com.devsu.backend.dto.ReporteDTO;
+import com.devsu.backend.model.Cuenta;
 import com.devsu.backend.model.Movimiento;
+import com.devsu.backend.repository.CuentaRepository;
+import com.devsu.backend.repository.MovimientoRepository;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import lombok.RequiredArgsConstructor;
@@ -20,26 +23,51 @@ import java.util.stream.Collectors;
 public class ReporteService {
 
     private final MovimientoService movimientoService;
+    private final MovimientoRepository movimientoRepository;
+    private final CuentaRepository cuentaRepository;
 
     public List<ReporteDTO> getReporte(
             Long clienteId,
             LocalDate fechaInicio,
             LocalDate fechaFin
     ){
-        List<Movimiento> movimientos = movimientoService.getReporte(clienteId, fechaInicio, fechaFin);
+        //Obtener todas las cuentas del cliente
+        List<Cuenta> cuentas = cuentaRepository.findByClienteId(clienteId);
 
-        return movimientos.stream().map(m -> {
-            ReporteDTO dto = new ReporteDTO();
-            dto.setFecha(m.getFecha());
-            dto.setCliente(m.getCuenta().getCliente().getNombre());
-            dto.setNumeroCuenta(m.getCuenta().getNumeroCuenta());
-            dto.setTipo(m.getCuenta().getTipoCuenta());
-            dto.setSaldoInicial(m.getCuenta().getSaldoInicial());
-            dto.setEstado(m.getCuenta().getEstado());
-            dto.setMovimiento(m.getValor());
-            dto.setSaldoDisponible(m.getSaldo());
-            return dto;
-        }).collect(Collectors.toList());
+        List<ReporteDTO> resultado = new ArrayList<>();
+        for (Cuenta cuenta : cuentas){
+            //Obtener movimientos de esta cuenta en el rango de fechas
+            List<Movimiento> movimientos = movimientoRepository.findByCuentaIdAndFechaBetween(cuenta.getId(), fechaInicio, fechaFin);
+
+            if(movimientos.isEmpty()){
+                //Si no tiene movimientos igual aprece con el saldo incial
+                ReporteDTO dto = new ReporteDTO();
+                dto.setFecha(fechaInicio);
+                dto.setCliente(cuenta.getCliente().getNombre());
+                dto.setNumeroCuenta(cuenta.getNumeroCuenta());
+                dto.setTipo(cuenta.getTipoCuenta());
+                dto.setSaldoInicial(cuenta.getSaldoInicial());
+                dto.setEstado(cuenta.getEstado());
+                dto.setMovimiento(0.0);
+                dto.setSaldoDisponible(cuenta.getSaldoDisponible());
+                resultado.add(dto);
+            }else {
+                //Si tiene movimientos los agrega todos
+                movimientos.forEach(m -> {
+                    ReporteDTO dto = new ReporteDTO();
+                    dto.setFecha(m.getFecha());
+                    dto.setCliente(cuenta.getCliente().getNombre());
+                    dto.setNumeroCuenta(cuenta.getNumeroCuenta());
+                    dto.setTipo(cuenta.getTipoCuenta());
+                    dto.setSaldoInicial(cuenta.getSaldoInicial());
+                    dto.setEstado(cuenta.getEstado());
+                    dto.setMovimiento(m.getValor());
+                    dto.setSaldoDisponible(m.getSaldo());
+                    resultado.add(dto);
+                });
+            }
+        }
+        return  resultado;
     }
 
     public String generarPDFBase64(
