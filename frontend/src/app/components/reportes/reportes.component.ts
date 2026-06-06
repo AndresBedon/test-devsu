@@ -31,7 +31,10 @@ export class ReportesComponent {
         private cdr: ChangeDetectorRef
     ) {
         this.clienteService.getAll().subscribe({
-            next: (data) => this.clientes = data
+            next: (data) => {
+                this.clientes = data
+                this.cdr.detectChanges();
+            }
         });
     }
 
